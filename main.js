@@ -51,6 +51,8 @@ document.getElementById('scaleChange').addEventListener('click', scaleChange);
       var material = new THREE.MeshBasicMaterial({ color: 0x00FFFF, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
       plane = new THREE.Mesh(geometry, material);
       plane.position.z = dist;
+      plane.rotation.x = circle.rotation.x;
+      plane.rotation.y = circle.rotation.y;
       scene.add(plane);
     } else {
       scene.remove(plane);
@@ -101,6 +103,9 @@ document.getElementById('changePlaneDistance').addEventListener('click', changeP
     var newRotationY = document.getElementById('CircleRotateY').value;
     circleRotationAngleY = parseFloat(newRotationY);
     circle.rotation.y = THREE.MathUtils.degToRad(circleRotationAngleY);
+
+    plane.rotation.x = circle.rotation.x;
+    plane.rotation.y = circle.rotation.y;
 
     /* var newRotationZ = document.getElementById('CircleRotateZ').value;
     circleRotationAngleZ = parseFloat(newRotationZ);
