@@ -7,6 +7,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
   var swich = false; // true == plane
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  var circleRotationAngleX = 0;
+  var circleRotationAngleY = 0;
+  /* var circleRotationAngleZ = 0; */
 
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -17,13 +20,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 //Controls
   //scalaDimensioni-------------
-  function cambiaScala() {
-    var newScala = document.getElementById('scalaInput').value;
-    var nuovaScala = parseFloat(newScala);
+function scaleChange() {
+    var newScale = document.getElementById('scaleInput').value;
+    var tempScale = parseFloat(newScale);
 
-    if (!isNaN(nuovaScala)) {
+    if (!isNaN(tempScale)) {
 
-      scale = nuovaScala;
+      scale = tempScale;
       if(swich == true){
         updateRenderPlane();
       }
@@ -31,10 +34,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
         updateRenderSphere();
       }
     } else {
-      alert('Il valore inserito non è valido. Si prega di inserire un numero valido per la scala.');
+      alert('The value entered is invalid. Please enter a valid scale number.');
     }
   }
-  document.getElementById('cambiaScala').addEventListener('click', cambiaScala);
+document.getElementById('scaleChange').addEventListener('click', scaleChange);
   //-------------------------------------------------------
 
   //Swich-----------------------
@@ -61,13 +64,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
   //-------------------------------------------------------
 
   //DistPiano------------------
-  function cambiaDistanzaPiano() {
-    var newDistanzaPiano = document.getElementById('distanzaPiano').value;
-    var NuovaDistanzaPiano = parseFloat(newDistanzaPiano);
+  function changePlaneDistance() {
+    var newPlaneDistance = document.getElementById('planeDistance').value;
+    var NuovaPlaneDistance = parseFloat(newPlaneDistance);
 
-    if (!isNaN(NuovaDistanzaPiano)) {
+    if (!isNaN(NuovaPlaneDistance)) {
 
-      dist = NuovaDistanzaPiano;
+      dist = NuovaPlaneDistance;
       if(swich==true){
         updateRenderPlane();
       }
@@ -76,70 +79,98 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
       alert('Il valore inserito non è valido. Si prega di inserire un numero valido per la scala.');
     }
   }
-  document.getElementById('cambiaDistanzaPiano').addEventListener('click', cambiaDistanzaPiano);
+document.getElementById('changePlaneDistance').addEventListener('click', changePlaneDistance);
   //-------------------------------------------------------
 
-  //viewUpdate
-    //planeUpdate-----------------
-    function updateRenderPlane() {
-      // Aggiorna la geometria del piano con la nuova scala
-      var newGeometry = new THREE.PlaneGeometry(1 * scale, 1 * scale);
-      plane.geometry.dispose(); // Libera la geometria precedente
-      plane.geometry = newGeometry;
-      plane.position.z = dist;
+  //CameraReset------------------
+  function CameraReset() {
+    camera.position.set(0, 0, 5 * scale); // Set the camera to its initial position
+    camera.lookAt(0, 0, 0); // Look at the origin (0, 0, 0)
+  }
+  document.getElementById('CameraReset').addEventListener('click', CameraReset);
+  //-------------------------------------------------------
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-      // Ricostruisci la geometria del cerchio
-      circleRadius = 1;
-      circleSegments = 10000;
-      circleGeometry = new THREE.BufferGeometry();
-      vertices = [];
+//viewUpdate
+  //circleUpdate-----------------
+  function circleUpdate(){
+    var newRotationX = document.getElementById('CircleRotateX').value;
+    circleRotationAngleX = parseFloat(newRotationX);
+    circle.rotation.x = THREE.MathUtils.degToRad(circleRotationAngleX);
 
-      for (let i = 0; i <= circleSegments; i++) {
-        theta = (i / circleSegments) * Math.PI * 2;
-        x = scale * circleRadius * Math.cos(theta);
-        y = scale * circleRadius * Math.sin(theta);
-        vertices.push(x, y, 0);
-      }
+    var newRotationY = document.getElementById('CircleRotateY').value;
+    circleRotationAngleY = parseFloat(newRotationY);
+    circle.rotation.y = THREE.MathUtils.degToRad(circleRotationAngleY);
 
-      circleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-      circle.geometry.dispose(); // Libera la geometria precedente
-      circle.geometry = circleGeometry;
+    /* var newRotationZ = document.getElementById('CircleRotateZ').value;
+    circleRotationAngleZ = parseFloat(newRotationZ);
+    circle.rotation.z = THREE.MathUtils.degToRad(circleRotationAngleZ); */
+  }
+  document.getElementById('CircleRotateX').addEventListener('click', circleUpdate);
+  document.getElementById('CircleRotateY').addEventListener('click', circleUpdate);
+  /* document.getElementById('CircleRotateZ').addEventListener('click', circleUpdate); */
+  //-------------------------------------------------------
 
-      updateAxes();
+  //planeUpdate-----------------
+  function updateRenderPlane() {
+    // Aggiorna la geometria del piano con la nuova scala
+    var newGeometry = new THREE.PlaneGeometry(1 * scale, 1 * scale);
+    plane.geometry.dispose(); // Libera la geometria precedente
+    plane.geometry = newGeometry;
+    plane.position.z = dist;
 
-      renderer.render(scene);
+    // Ricostruisci la geometria del cerchio
+    circleRadius = 1;
+    circleSegments = 10000;
+    circleGeometry = new THREE.BufferGeometry();
+    vertices = [];
+
+    for (let i = 0; i <= circleSegments; i++) {
+      theta = (i / circleSegments) * Math.PI * 2;
+      x = scale * circleRadius * Math.cos(theta);
+      y = scale * circleRadius * Math.sin(theta);
+      vertices.push(x, y, 0);
     }
-    //-------------------------------------------------------
 
-    //sphereUpdate----------------
-    function updateRenderSphere() {
+    circleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    circle.geometry.dispose(); // Libera la geometria precedente
+    circle.geometry = circleGeometry;
 
-      // Aggiorna la geometria del piano con la nuova scala
-      var newGeometry = new THREE.SphereGeometry(1 * scale, 1000, 1000);
-      sphere.geometry.dispose(); // Libera la geometria precedente
-      sphere.geometry = newGeometry;
+    updateAxes();
 
-      // Ricostruisci la geometria del cerchio
-      circleRadius = 1;
-      circleSegments = 10000;
-      circleGeometry = new THREE.BufferGeometry();
-      vertices = [];
+    renderer.render(scene);
+  }
+  //-------------------------------------------------------
 
-      for (let i = 0; i <= circleSegments; i++) {
-        theta = (i / circleSegments) * Math.PI * 2;
-        x = scale * circleRadius * Math.cos(theta);
-        y = scale * circleRadius * Math.sin(theta);
-        vertices.push(x, y, 0);
-      }
+  //sphereUpdate----------------
+  function updateRenderSphere() {
 
-      circleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-      circle.geometry.dispose(); // Libera la geometria precedente
-      circle.geometry = circleGeometry;
+    // Aggiorna la geometria del piano con la nuova scala
+    var newGeometry = new THREE.SphereGeometry(1 * scale, 1000, 1000);
+    sphere.geometry.dispose(); // Libera la geometria precedente
+    sphere.geometry = newGeometry;
 
-      updateAxes();
+    // Ricostruisci la geometria del cerchio
+    circleRadius = 1;
+    circleSegments = 10000;
+    circleGeometry = new THREE.BufferGeometry();
+    vertices = [];
 
-      renderer.render(scene);
+    for (let i = 0; i <= circleSegments; i++) {
+      theta = (i / circleSegments) * Math.PI * 2;
+      x = scale * circleRadius * Math.cos(theta);
+      y = scale * circleRadius * Math.sin(theta);
+      vertices.push(x, y, 0);
     }
+
+    circleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    circle.geometry.dispose(); // Libera la geometria precedente
+    circle.geometry = circleGeometry;
+
+    updateAxes();
+
+    renderer.render(scene);
+  }
   //-------------------------------------------------------
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

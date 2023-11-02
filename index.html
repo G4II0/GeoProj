@@ -4,23 +4,41 @@
     <title>GeoProj</title>
   </head>
   <body>
-    <h1>Inserisci Valori</h1>
+    <h1>Modify Values</h1>
     <div>
-      <label for="scalaInput">Scala:</label>
-      <input type="number" id="scalaInput" value="1">
-      <button id="cambiaScala">Applica</button>
+      <label for="scaleInput">Scale:</label>
+      <input type="number" id="scaleInput" value="1">
+      <button id="scaleChange">Apply</button>
 
-      <label for="distanzaPiano">DistanzaPiano:</label>
-      <input type="number" id="distanzaPiano" value="0">
-      <button id="cambiaDistanzaPiano">Applica</button>
+      <label for="planeDistance">PlaneDistance:</label>
+      <input type="number" id="planeDistance" value="0">
+      <button id="changePlaneDistance">Apply</button>
+    </div>
 
+    <div>
       <label for="Swich">Swich:</label>
       <input type="checkbox" id="Swich">
+    </div>
+      
+    <div>
+      <label for="CameraReset">Camera:</label>
+      <input type="button" id="CameraReset">
+    </div>
 
+    <div>
+      <label for="CircleRotateX">CircleX: </label>
+      <input type="range" id="CircleRotateX" min="0" max="360" step="1" value="0">
+      
+      <label for="CircleRotateY">CircleY: </label>
+      <input type="range" id="CircleRotateY" min="0" max="360" step="1" value="0">
+      <!-- <label for="CircleRotateZ">Circle: </label>
+      <input type="range" id="CircleRotateZ" min="0" max="360" step="1" value="0"> -->
     </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
+
+
 
 <!--
 
