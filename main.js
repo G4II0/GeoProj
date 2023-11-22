@@ -50,6 +50,9 @@ document.getElementById('scaleChange').addEventListener('click', scaleChange);
       var geometry = new THREE.PlaneGeometry(1 * scale, 1 * scale);
       var material = new THREE.MeshBasicMaterial({ color: 0x00FFFF, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
       plane = new THREE.Mesh(geometry, material);
+      /*prova con prodotti di matrici e vettori
+      Crei i vettori che deviniscono i vertici del piano v1,v2,v3,v4 e li trasformi con una matrice R che determiniamo poi
+      Ho visto BufferGeometry lo ha built in con i metodi applyMatrix4 e applyQuaternion*/
       plane.position.z = dist;
       plane.rotation.x = circle.rotation.x;
       plane.rotation.y = circle.rotation.y;
@@ -122,14 +125,15 @@ document.getElementById('changePlaneDistance').addEventListener('click', changeP
     var newGeometry = new THREE.PlaneGeometry(1 * scale, 1 * scale);
     plane.geometry.dispose(); // Libera la geometria precedente
     plane.geometry = newGeometry;
-    plane.position.z = dist;
+    plane.position.z = dist;//va cambiato anche questo per ruotare il piano
 
     // Ricostruisci la geometria del cerchio
     circleRadius = 1;
     circleSegments = 10000;
     circleGeometry = new THREE.BufferGeometry();
     vertices = [];
-
+    /*usando BufferGeometry può essere interessante creare un unico cerchio da poi trasformare con una matrice
+    ci sono le funzioni built in applyMatrix4 e applyQuaternion*/
     for (let i = 0; i <= circleSegments; i++) {
       theta = (i / circleSegments) * Math.PI * 2;
       x = scale * circleRadius * Math.cos(theta);
